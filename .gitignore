@@ -1,0 +1,5 @@
+# Mac folder clutter
+.DS_Store
+
+# Personal Claude Code settings (launch.json is shared and stays in)
+.claude/settings.local.json

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Many Words</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <!-- Intro -->
+    <section id="intro" class="screen">
+      <h1 class="intro-title">How many English words do you know?</h1>
+      <p class="intro-text">You'll see 100 words, one at a time. Mark each one you know. About a third are made up, and claiming those lowers your score.</p>
+      <button id="start" class="btn btn-know" disabled>Loading words…</button>
+      <p id="load-error" class="error" hidden></p>
+    </section>
+
+    <!-- Test -->
+    <section id="test" class="screen" hidden>
+      <div class="ticks" id="ticks" aria-hidden="true"></div>
+      <p class="counter" id="counter" aria-live="polite"></p>
+      <div class="word-stage">
+        <p class="word" id="word"></p>
+      </div>
+      <div class="actions">
+        <button id="unsure" class="btn btn-unsure">Not sure</button>
+        <button id="know" class="btn btn-know">I know it</button>
+      </div>
+      <div class="test-footer">
+        <button id="undo" class="link-btn" disabled>Undo last answer</button>
+        <p class="keys">Keyboard: → know it, ← not sure, Backspace undo</p>
+      </div>
+    </section>
+
+    <!-- Done -->
+    <section id="done" class="screen" hidden>
+      <div class="result">
+        <p class="done-count" id="done-count"></p>
+        <p class="done-text" id="done-text"></p>
+        <p class="done-range" id="done-range"></p>
+        <p class="warning" id="done-warning" hidden></p>
+      </div>
+
+      <div class="compare">
+        <fieldset class="age-picker">
+          <legend>Your age</legend>
+          <div class="age-options" id="age-options"></div>
+        </fieldset>
+        <p class="compare-headline" id="compare-headline" aria-live="polite"></p>
+        <div class="scale" id="scale" aria-hidden="true">
+          <div class="scale-band" id="scale-band"></div>
+          <div class="scale-median" id="scale-median"></div>
+          <div class="scale-you" id="scale-you"></div>
+        </div>
+        <div class="scale-labels" aria-hidden="true">
+          <span id="scale-p5"></span><span id="scale-p50"></span><span id="scale-p95"></span>
+        </div>
+        <p class="compare-text" id="compare-text"></p>
+      </div>
+
+      <div class="fakes">
+        <h2 class="fakes-title" id="fakes-title"></h2>
+        <ul class="fake-list" id="fake-list"></ul>
+      </div>
+
+      <p class="done-note">Comparisons use Brysbaert, Stevens, Mandera and Keuleers (2016), <a href="https://doi.org/10.3389/fpsyg.2016.01116" target="_blank" rel="noopener">“How Many Words Do We Know?”</a>, a study of 221,268 people. Its figures are for native speakers of American English, and count a word as known if you recognize it. The word list comes from the same study (CC BY).</p>
+      <button id="again" class="btn btn-know">Take a new test</button>
+    </section>
+  </main>
+  <script src="scoring.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+:root {
+  --paper: #eef2f8;
+  --ink: #14213d;
+  --ink-soft: #5b6886;
+  --line: #c9d2e3;
+  --highlight: #ffe45c;
+  --highlight-ink: #14213d;
+  --error: #b42318;
+  --font: "Bricolage Grotesque", system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0f1a30;
+    --ink: #e6ebf5;
+    --ink-soft: #95a2bf;
+    --line: #2b3a5a;
+    --highlight: #ffe45c;
+    --highlight-ink: #14213d;
+    --error: #ff8a80;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 18px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  min-height: 100%;
+  display: flex;
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen[hidden] { display: none; }
+
+/* Intro */
+#intro { justify-content: center; gap: 24px; }
+
+.intro-title {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin: 0;
+  max-width: 12ch;
+}
+
+.intro-text {
+  margin: 0;
+  max-width: 34em;
+  color: var(--ink-soft);
+}
+
+.error { color: var(--error); margin: 0; }
+
+/* Age range buttons on the results screen (radio buttons styled as pills) */
+.age-picker { border: none; margin: 0; padding: 0; min-width: 0; }
+.age-picker legend { padding: 0; margin-bottom: 8px; font-weight: 600; }
+.age-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.age-options input { position: absolute; opacity: 0; pointer-events: none; }
+.age-options label {
+  padding: 8px 16px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+.age-options label:hover { border-color: var(--ink-soft); }
+.age-options input:checked + label {
+  background: var(--highlight);
+  border-color: var(--highlight);
+  color: var(--highlight-ink);
+  font-weight: 600;
+}
+.age-options input:focus-visible + label { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+/* Buttons */
+.btn {
+  font: inherit;
+  font-weight: 600;
+  font-size: 1.125rem;
+  border-radius: 999px;
+  padding: 16px 28px;
+  cursor: pointer;
+  border: 2px solid var(--ink);
+  transition: transform 80ms ease;
+}
+
+.btn:active:not(:disabled) { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+
+.btn-know {
+  background: var(--highlight);
+  color: var(--highlight-ink);
+  border-color: var(--highlight);
+}
+
+.btn-unsure {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+#intro .btn, #done .btn { align-self: flex-start; }
+
+.btn:focus-visible, .link-btn:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Test */
+.ticks {
+  display: grid;
+  grid-template-columns: repeat(50, 1fr);
+  gap: 3px;
+}
+
+.tick {
+  height: 6px;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.tick.answered { background: var(--ink-soft); }
+.tick.known { background: var(--highlight); }
+.tick.current { background: var(--ink); }
+
+.counter {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.word-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+}
+
+.word {
+  margin: 0;
+  /* Big by default; long words shrink so they fit on one line.
+     --len is the word's letter count, set by app.js. */
+  font-size: min(
+    clamp(2.75rem, 12vw, 6.5rem),
+    calc((min(100vw, 720px) - 48px) / (var(--len, 8) * 0.56))
+  );
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-align: center;
+  overflow-wrap: anywhere;
+  padding: 0.05em 0.15em;
+  background-image: linear-gradient(var(--highlight), var(--highlight));
+  background-repeat: no-repeat;
+  background-position: 0 85%;
+  background-size: 0% 45%;
+  color: var(--ink);
+}
+
+/* The highlighter swipe when you mark a word as known */
+.word.marked {
+  background-size: 100% 45%;
+  transition: background-size 160ms ease-out;
+  color: var(--highlight-ink);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.actions .btn { padding: 20px 16px; }
+
+.test-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.link-btn {
+  font: inherit;
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link-btn:disabled { opacity: 0.4; cursor: default; text-decoration: none; }
+
+.keys {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+@media (hover: none) {
+  .keys { display: none; }
+}
+
+/* Done */
+#done { justify-content: center; gap: 32px; padding: 24px 0; }
+
+.result { display: flex; flex-direction: column; gap: 12px; }
+
+.done-range { margin: 0; color: var(--ink-soft); max-width: 34em; }
+
+.warning {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 4px solid var(--error);
+  color: var(--ink);
+  max-width: 34em;
+}
+
+.compare { display: flex; flex-direction: column; gap: 12px; max-width: 34em; }
+
+.compare-headline { margin: 0; font-size: 1.25rem; font-weight: 600; }
+
+/* A bar from 0 to 61,800 words: the shaded band is the study's middle 90%,
+   the thin line is the median, the yellow dot is the player. */
+.scale {
+  position: relative;
+  height: 28px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: var(--line);
+}
+.scale-band {
+  position: absolute;
+  top: 0; bottom: 0;
+  background: var(--ink-soft);
+  opacity: 0.45;
+}
+.scale-median {
+  position: absolute;
+  top: -4px; bottom: -4px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ink);
+}
+.scale-you {
+  position: absolute;
+  top: 50%;
+  width: 22px; height: 22px;
+  margin: -11px 0 0 -11px;
+  border-radius: 50%;
+  background: var(--highlight);
+  border: 3px solid var(--ink);
+}
+.scale-labels {
+  position: relative;
+  height: 1.4em;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.scale-labels span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+
+.compare-text { margin: 0; color: var(--ink-soft); }
+
+.done-note a { color: inherit; text-underline-offset: 3px; }
+
+.fakes { display: flex; flex-direction: column; gap: 12px; }
+
+.fakes-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  max-width: 34em;
+}
+
+.fake-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fake-list li {
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  text-decoration: line-through;
+  text-decoration-color: var(--line);
+}
+
+/* Fake words the player said they knew: highlighted, not crossed out */
+.fake-list li.claimed {
+  background: var(--highlight);
+  border-color: var(--highlight);
+  color: var(--highlight-ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.done-count {
+  margin: 0;
+  font-size: clamp(4rem, 18vw, 9rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.done-text { margin: 0; font-size: 1.25rem; max-width: 30em; }
+.done-note { margin: 0; color: var(--ink-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  .word.marked { transition: none; }
+  .btn { transition: none; }
+}
