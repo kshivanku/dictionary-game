@@ -8,6 +8,7 @@ Reads:
   data/source/brysbaert-2016-lemmas.xlsx  the study's word list (sheet 1)
   data/source/enable1.txt                 extra real words, to keep fakes fake
   /usr/share/dict/words                   macOS word list, same purpose
+  data/source/blocked-words.txt           offensive words kept out of both lists
 Writes:
   data/words.txt       the study's words, one per line
   data/fake-words.txt  made-up words that look English but aren't
@@ -26,6 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 STUDY_LIST = ROOT / "data" / "source" / "brysbaert-2016-lemmas.xlsx"
 ENABLE = ROOT / "data" / "source" / "enable1.txt"
 MAC_WORDS = Path("/usr/share/dict/words")
+BLOCKED = ROOT / "data" / "source" / "blocked-words.txt"
 OUT_REAL = ROOT / "data" / "words.txt"
 OUT_FAKE = ROOT / "data" / "fake-words.txt"
 
@@ -63,6 +65,32 @@ def read_study_words():
     return sorted(set(words))
 
 
+def read_blocked():
+    """Return (prefix words, exact words, allowed words) from blocked-words.txt."""
+    sections = {"[prefix]": set(), "[exact]": set(), "[allow]": set()}
+    section = None
+    for line in BLOCKED.read_text().splitlines():
+        line = line.strip().lower()
+        if not line or line.startswith("#"):
+            continue
+        if line in sections:
+            section = line
+        elif section:
+            sections[section].add(line)
+    return sections["[prefix]"], sections["[exact]"], sections["[allow]"]
+
+
+def is_blocked_real(word, prefix, exact, allow):
+    w = word.lower()
+    if w in allow:
+        return False
+    return w in exact or any(w.startswith(p) for p in prefix)
+
+
+def is_blocked_fake(word, prefix, exact, allow):
+    return any(b in word for b in prefix | exact)
+
+
 def is_form_of_real(word, real):
     for ending, put_back in ENDINGS:
         if word.endswith(ending):
@@ -91,7 +119,7 @@ def too_close_to_real(word, real):
     return False
 
 
-def build_fake_words(study_words, known_real):
+def build_fake_words(study_words, known_real, blocked):
     """Learn which letter tends to follow each three-letter chunk in the
     study's words, then string letters together to make new ones."""
     rng = random.Random(SEED)
@@ -118,6 +146,8 @@ def build_fake_words(study_words, known_real):
             continue
         if too_close_to_real(word, known_real):
             continue
+        if is_blocked_fake(word, *blocked):
+            continue
         fakes.add(word)
     return sorted(fakes)
 
@@ -129,12 +159,17 @@ def main():
     if MAC_WORDS.exists():
         mac = {l.strip().lower() for l in MAC_WORDS.read_text().splitlines()}
     known_real = set(w.lower() for w in study) | enable | mac
+    blocked = read_blocked()
 
-    fakes = build_fake_words(study, known_real)
+    removed = [w for w in study if is_blocked_real(w, *blocked)]
+    real = [w for w in study if not is_blocked_real(w, *blocked)]
+    fakes = build_fake_words(study, known_real, blocked)
 
-    OUT_REAL.write_text("\n".join(study) + "\n")
+    OUT_REAL.write_text("\n".join(real) + "\n")
     OUT_FAKE.write_text("\n".join(fakes) + "\n")
-    print(f"Study words:     {len(study):,}  -> {OUT_REAL.relative_to(ROOT)}")
+    print(f"Study words:     {len(study):,}")
+    print(f"Blocked:         {len(removed):,}  {', '.join(removed)}")
+    print(f"Real words kept: {len(real):,}  -> {OUT_REAL.relative_to(ROOT)}")
     print(f"Fake words made: {len(fakes):,}  -> {OUT_FAKE.relative_to(ROOT)}")
 
 

@@ -1,0 +1,113 @@
+# Words kept out of the game. Used by scripts/build_word_lists.py.
+#
+# [prefix] words: a real word is removed if it starts with one of these
+#   ("fuck" also removes "fucking"). Only list words that are never innocent
+#   at the start of a longer word.
+# [exact] words: a real word is removed only if it matches exactly.
+#   For words like "cock" that begin innocent words ("cockpit").
+#
+# [allow] words: real words kept even though a rule above would remove them.
+#
+# Fake words are removed if they contain ANY [prefix] or [exact] word,
+# anywhere inside. Lines starting with # are notes.
+
+[allow]
+# Unrelated to the slur they start with, and common
+niggle
+niggles
+niggled
+niggling
+# Medical term
+spasticity
+
+[prefix]
+asshole
+bastard
+bitch
+blowjob
+bollock
+bullshit
+chinaman
+cocksucker
+cunt
+dago
+darkie
+dildo
+dumbass
+dyke
+fagg
+fuck
+goddam
+gook
+handjob
+honkie
+honky
+jackass
+jigaboo
+jizz
+kike
+motherfuck
+negro
+nigg
+paki
+pickaninny
+piss
+polack
+raghead
+shit
+slut
+spastic
+towelhead
+tranny
+twat
+wank
+wetback
+whore
+
+[exact]
+anus
+arse
+ass
+asses
+beaner
+beaners
+boob
+boobs
+coon
+coons
+crap
+crappy
+cock
+cocks
+cum
+damn
+damned
+dick
+dicks
+fag
+fags
+gyp
+gypped
+hell
+homo
+homos
+jap
+japs
+kraut
+krauts
+prick
+pricks
+pussy
+retard
+retarded
+retards
+sambo
+spaz
+spic
+spics
+squaw
+tit
+tits
+titty
+wop
+wops
